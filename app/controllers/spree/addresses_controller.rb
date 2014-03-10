@@ -19,7 +19,7 @@ class Spree::AddressesController < Spree::StoreController
   def update
     if @address.editable?
       if @address.update_attributes(params[:address])
-        flash[:notice] = I18n.t(:successfully_updated, :resource => I18n.t(:address))
+        flash[:notice] = Spree.t(:successfully_updated, :resource => Spree::Address.model_name.human)
         redirect_back_or_default(account_path)
       else
         render :action => "edit"
@@ -29,7 +29,7 @@ class Spree::AddressesController < Spree::StoreController
       new_address.attributes = params[:address]
       @address.update_attribute(:deleted_at, Time.now)
       if new_address.save
-        flash[:notice] = I18n.t(:successfully_updated, :resource => I18n.t(:address))
+        flash[:notice] = Spree.t(:successfully_updated, :resource => Spree::Address.model_name.human)
         redirect_back_or_default(account_path)
       else
         render :action => "edit"
@@ -39,9 +39,9 @@ class Spree::AddressesController < Spree::StoreController
 
   def create
     @address = Spree::Address.new(params[:address])
-    @address.user = current_user
+    @address.user = spree_current_user
     if @address.save
-      flash[:notice] = I18n.t(:successfully_created, :resource => I18n.t(:address))
+      flash[:notice] = Spree.t(:successfully_created, :resource => Spree::Address.model_name.human)
       redirect_to account_path
     else
       render :action => "new"
@@ -51,7 +51,7 @@ class Spree::AddressesController < Spree::StoreController
   def destroy
     @address.destroy
 
-    flash[:notice] = I18n.t(:successfully_removed, :resource => t(:address))
+    flash[:notice] =  Spree.t(:successfully_removed, :resource => Spree::Address.model_name.human)
     redirect_to(request.env['HTTP_REFERER'] || account_path) unless request.xhr?
   end
 end

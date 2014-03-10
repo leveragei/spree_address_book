@@ -4,7 +4,7 @@
   <% if field == "country" %>
 
   <p class="field" id=<%="#{address_id}country" %>>
-    <%= address_form.label :country_id, t(:country) %><span class="required">*</span><br />
+    <%= address_form.label :country_id, Spree.t(:country) %><span class="required">*</span><br />
     <span id=<%="#{address_id}country-selection" %>>
       <%= address_form.collection_select :country_id, available_countries, :id, :name, {}, {:class => 'required'} %>
     </span>
@@ -14,7 +14,7 @@
 
     <p class="field" id=<%="#{address_id}state" %>>
       <% have_states = !address.country.states.empty? %>
-      <%= address_form.label :state, t(:state) %><span class='required' id=<%="#{address_id}state-required"%>>*</span><br/>
+      <%= address_form.label :state, Spree.t(:state) %><span class='required' id=<%="#{address_id}state-required"%>>*</span><br/>
 
       <% state_elements = [
          address_form.collection_select(:state_id, address.country.states,
