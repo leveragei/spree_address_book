@@ -1,20 +1,25 @@
 Spree::Address.class_eval do
-  belongs_to :user, :class_name => Spree.user_class.to_s
+  belongs_to :user, class_name: Spree.user_class.to_s
 
-  attr_accessible :user_id, :deleted_at
+  Spree::PermittedAttributes.address_attributes << :user_id
+  Spree::PermittedAttributes.address_attributes << :deleted_at
 
   def self.required_fields
-    validator = Spree::Address.validators.find{|v| v.kind_of?(ActiveModel::Validations::PresenceValidator)}
+    validator = Spree::Address.validators.find { |v| v.kind_of?(ActiveModel::Validations::PresenceValidator) }
     validator ? validator.attributes : []
   end
-  
+
   # TODO: look into if this is actually needed. I don't want to override methods unless it is really needed
   # can modify an address if it's not been used in an order
   def same_as?(other)
     return false if other.nil?
-    attributes.except('id', 'updated_at', 'created_at', 'user_id') == other.attributes.except('id', 'updated_at', 'created_at', 'user_id')
+
+    #remove nil and empty values from the hash
+    current_attributes = clean_hash(attributes.except('id', 'updated_at', 'created_at', 'user_id'))
+    other_attributes   = clean_hash(other.attributes.except('id', 'updated_at', 'created_at', 'user_id'))
+    current_attributes == other_attributes
   end
-  
+
   # can modify an address if it's not been used in an completed order
   def editable?
     new_record? || (shipments.empty? && Spree::Order.complete.where("bill_address_id = ? OR ship_address_id = ?", self.id, self.id).count == 0)
@@ -40,4 +45,10 @@ Spree::Address.class_eval do
       update_column :deleted_at, Time.now
     end
   end
+
+  private
+  def clean_hash(hash)
+    hash.delete_if { |k, v| v.nil? || v == "" }
+  end
+
 end

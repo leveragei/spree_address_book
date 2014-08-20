@@ -1,23 +1,24 @@
 Spree::Order.class_eval do
-  attr_accessible :bill_address_id, :ship_address_id
-  before_validation :clone_shipping_address, :if => "Spree::AddressBook::Config[:disable_bill_address]"
-  
+  before_validation :clone_shipping_address, if: "Spree::AddressBook::Config.disable_bill_address"
+  Spree::PermittedAttributes.checkout_attributes << :bill_address_id
+  Spree::PermittedAttributes.checkout_attributes << :ship_address_id
+
   def clone_shipping_address
     if self.ship_address
       self.bill_address = self.ship_address
     end
     true
   end
-  
+
   def clone_billing_address
     if self.bill_address
       self.ship_address = self.bill_address
     end
     true
   end
-  
+
   def bill_address_id=(id)
-    address = Spree::Address.where(:id => id).first
+    address = Spree::Address.where(id: id).first
     if address && address.user_id == self.user_id
       self["bill_address_id"] = address.id
       self.bill_address.reload
@@ -25,13 +26,13 @@ Spree::Order.class_eval do
       self["bill_address_id"] = nil
     end
   end
-  
+
   def bill_address_attributes=(attributes)
     self.bill_address = update_or_create_address(attributes)
   end
 
   def ship_address_id=(id)
-    address = Spree::Address.where(:id => id).first
+    address = Spree::Address.where(id: id).first
     if address && address.user_id == self.user_id
       self["ship_address_id"] = address.id
       self.ship_address.reload
@@ -39,13 +40,13 @@ Spree::Order.class_eval do
       self["ship_address_id"] = nil
     end
   end
-  
+
   def ship_address_attributes=(attributes)
     self.ship_address = update_or_create_address(attributes)
   end
-  
+
   private
-  
+
   def update_or_create_address(attributes)
     if attributes[:id]
       address = Spree::Address.find(attributes[:id])
@@ -58,12 +59,12 @@ Spree::Order.class_eval do
       end
     end
 
-    if !attributes[:id]
+    unless attributes[:id]
       address = Spree::Address.new(attributes)
       address.save
     end
-    
+
     address
   end
-    
+
 end
