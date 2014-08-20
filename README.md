@@ -12,4 +12,14 @@ Installation
       Run `rails g spree_address_book:install`
 
 
-Copyright (c) 2011-2012 Roman Smirnov, released under the New BSD License
+Tests
+============
+
+      Run `bundle exec rake test_app`
+      Run `cd spec/dummy` to go to the dummy folder
+      Run `bundle exec rails g spree:install`
+      Run `bundle exec rails g spree_address_book:install`
+      Run `cd ..` to go back to the main app
+      Run `bundle exec rspec`
+      
+Copyright (c) 2011-2014 Roman Smirnov, released under the New BSD License
