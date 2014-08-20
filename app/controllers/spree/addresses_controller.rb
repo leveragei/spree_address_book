@@ -1,9 +1,10 @@
 class Spree::AddressesController < Spree::StoreController
   helper Spree::AddressesHelper
-  rescue_from ActiveRecord::RecordNotFound, :with => :render_404
+
+  rescue_from ActiveRecord::RecordNotFound, with: :render_404
   load_and_authorize_resource class: 'Spree::Address'
   ssl_required :destroy
-  
+
   def show
     redirect_to account_path
   end
@@ -18,18 +19,18 @@ class Spree::AddressesController < Spree::StoreController
 
   def update
     if @address.editable?
-      if @address.update_attributes(params[:address])
-        flash[:notice] = Spree.t(:successfully_updated, :resource => Spree::Address.model_name.human)
+      if @address.update_attributes(address_params)
+        flash[:notice] = Spree.t(:successfully_updated, resource: Spree::Address.model_name.human)
         redirect_back_or_default(account_path)
       else
         render :action => "edit"
       end
     else
-      new_address = @address.clone
+      new_address            = @address.clone
       new_address.attributes = params[:address]
       @address.update_attribute(:deleted_at, Time.now)
       if new_address.save
-        flash[:notice] = Spree.t(:successfully_updated, :resource => Spree::Address.model_name.human)
+        flash[:notice] = Spree.t(:successfully_updated, resource: Spree::Address.model_name.human)
         redirect_back_or_default(account_path)
       else
         render :action => "edit"
@@ -38,10 +39,10 @@ class Spree::AddressesController < Spree::StoreController
   end
 
   def create
-    @address = Spree::Address.new(params[:address])
+    @address      = Spree::Address.new(address_params)
     @address.user = spree_current_user
     if @address.save
-      flash[:notice] = Spree.t(:successfully_created, :resource => Spree::Address.model_name.human)
+      flash[:notice] = Spree.t(:successfully_created, resource: Spree::Address.model_name.human)
       redirect_to account_path
     else
       render :action => "new"
@@ -51,7 +52,12 @@ class Spree::AddressesController < Spree::StoreController
   def destroy
     @address.destroy
 
-    flash[:notice] =  Spree.t(:successfully_removed, :resource => Spree::Address.model_name.human)
+    flash[:notice] = Spree.t(:successfully_removed, resource: Spree::Address.model_name.human)
     redirect_to(request.env['HTTP_REFERER'] || account_path) unless request.xhr?
+  end
+
+  private
+  def address_params
+    params.require(:address).permit(Spree::PermittedAttributes.address_attributes)
   end
 end
