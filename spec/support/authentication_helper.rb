@@ -1,11 +1,12 @@
 module Authentication
   def sign_in!(user)
-    fill_in "Email", :with => user.email
-    fill_in "Password", :with => "secret"
-    click_button "Login"
+    puts "user.email: #{user.email.inspect}"
+    fill_in "spree_user_email", with: user.email
+    fill_in "spree_user_password", with: "secret"
+    click_on "Login"
   end
 end
 
 RSpec.configure do |c|
-  c.include Authentication, :type => :request
+  c.include Authentication, type: :feature
 end
