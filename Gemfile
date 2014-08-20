@@ -1,19 +1,11 @@
-source "http://rubygems.org"
-gemspec
+source 'https://rubygems.org'
 
-group :test do
-  gem 'sass-rails',   '~> 4.0.3'
-  gem 'coffee-rails', '~> 4.0.1'
+ruby "2.1.1"
+gem 'rails', '4.1.4'
 
-  if RUBY_PLATFORM.downcase.include? "darwin"
-    gem 'rb-fsevent'
-    gem 'growl'
-    gem 'guard-rspec'
-  end
-end
-
-gem 'devise'
-gem 'devise-encryptable'
+# Provides basic authentication functionality for testing parts of your engine
 gem 'spree', github: 'spree/spree', branch: '2-3-stable'
 # Provides basic authentication functionality for testing parts of your engine
 gem 'spree_auth_devise', github: 'spree/spree_auth_devise', branch: '2-3-stable'
+
+gemspec
