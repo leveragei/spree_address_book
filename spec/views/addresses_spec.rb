@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe 'spree/addresses/new', type: :view do
+
   let(:address) { build(:address) }
 
   it 'renders new.html.erb for new address' do

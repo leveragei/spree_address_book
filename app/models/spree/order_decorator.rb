@@ -25,6 +25,7 @@ Spree::Order.class_eval do
     else
       self["bill_address_id"] = nil
     end
+    user = Spree::User.first
   end
 
   def bill_address_attributes=(attributes)

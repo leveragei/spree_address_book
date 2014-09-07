@@ -29,12 +29,12 @@ describe "Address selection during checkout", type: :feature do
     end
   end
 
-  describe "as authenticated user with saved addresses", js: true do
+  describe "as authenticated user with saved addresses" do
     include_context "checkout with product"
     # include_context "user with address"
 
-    let!(:billing)  { build(:address, state: state) }
-    let!(:shipping) { build(:address, address1: Faker::Address.street_address, state: state) }
+    let(:billing)  { build(:address, state: state) }
+    let(:shipping) { build(:address, address1: Faker::Address.street_address, state: state) }
     let!(:user) do
       u = create(:user)
       u.addresses << create(:address, address1: Faker::Address.street_address, state: state)
@@ -47,7 +47,7 @@ describe "Address selection during checkout", type: :feature do
       sign_in_as!(user)
     end
 
-    it "does not see billing or shipping address form" do
+    it "does not see billing or shipping address form", js: true do
       expect(find("#billing .inner", visible: false)).not_to be_visible
       expect(find("#shipping .inner", visible: false)).not_to be_visible
     end

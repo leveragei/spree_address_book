@@ -5,6 +5,12 @@ class Spree::AddressesController < Spree::StoreController
   load_and_authorize_resource class: 'Spree::Address'
   ssl_required :destroy
 
+  attrs = [:address, :id, :firstname, :lastname, :first_name, :last_name,
+           :address1, :address2, :city, :country_id, :state_id,
+           :zipcode, :phone, :state_name, :alternative_phone, :company,
+           country: [:iso, :name, :iso3, :iso_name],
+           state: [:name, :abbr]]
+
   def show
     redirect_to account_path
   end
@@ -27,7 +33,7 @@ class Spree::AddressesController < Spree::StoreController
       end
     else
       new_address            = @address.clone
-      new_address.attributes = params[:address]
+      new_address.attributes = address_params
       @address.update_attribute(:deleted_at, Time.now)
       if new_address.save
         flash[:notice] = Spree.t(:successfully_updated, resource: Spree::Address.model_name.human)

@@ -1,8 +1,11 @@
 Spree::CheckoutController.class_eval do
   helper Spree::AddressesHelper
 
+
   Spree::PermittedAttributes.checkout_attributes << :bill_address_id
   Spree::PermittedAttributes.checkout_attributes << :ship_address_id
+
+
 
   after_filter :normalize_addresses, :only => :update
   before_filter :set_addresses, :only => :update
@@ -34,19 +37,21 @@ Spree::CheckoutController.class_eval do
     return if (@order.bill_address.nil? || @order.ship_address.nil?)
 
     return unless params[:state] == "address" && @order.bill_address_id && @order.ship_address_id
+
     @order.bill_address.reload
     @order.ship_address.reload
 
     # ensure that there is no validation errors and addresses was saved
     return unless @order.bill_address && @order.ship_address
 
+    @order.reload.bill_address.update_attribute(:user_id, spree_current_user.try(:id))
+    @order.reload.ship_address.update_attribute(:user_id, spree_current_user.try(:id))
+
     if @order.bill_address_id != @order.ship_address_id && @order.bill_address.same_as?(@order.ship_address)
-      @order.bill_address.destroy
-      @order.update_attribute(:bill_address_id, @order.ship_address.id)
-    else
-      @order.bill_address.update_attribute(:user_id, spree_current_user.try(:id))
+      #use the bill_address since they are the same
+      @order.ship_address.destroy
+      @order.update_attribute(:ship_address_id, @order.bill_address.id)
     end
-    @order.ship_address.update_attribute(:user_id, spree_current_user.try(:id))
   end
 end
 

@@ -25,7 +25,7 @@ describe "User editing saved address during checkout", type: :feature, js: true 
     end
   end
 
-  it "can update shipping address", :js => true do
+  it "can update shipping address" do
     within("#shipping #shipping_address_#{address.id}") do
       click_link "Edit"
     end
@@ -39,4 +39,5 @@ describe "User editing saved address during checkout", type: :feature, js: true 
       expect(page).to have_content(new_street)
     end
   end
+
 end
