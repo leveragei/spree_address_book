@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.requirements << 'none'
 
   s.add_dependency 'rails', '~> 4.1.4'
-  s.add_dependency 'spree_core', '~> 2.3.1'
+  s.add_dependency 'spree_core', '~> 2.4.0.beta'
 
   s.add_development_dependency 'rspec-rails', '~> 3.0.0'
   s.add_development_dependency 'coffee-rails', '~> 4.0.0'
